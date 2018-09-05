@@ -5,10 +5,11 @@
 </head>
 <body>
   <ul>
-    <!-- views/urls_index.ejs -->
-    const listOfURLs = [
-    { longURL: "http://www.lighthouselabs.ca", shortURL: <a href='#'>link</a> }
-    ];  
+    <% for (const shortURL in urls) { %>
+      <li>
+       <%= shortURL %> <%= urls[shortURL] %>
+      </li> 
+   <% } %>
   </ul>
 </body>
 </html>
