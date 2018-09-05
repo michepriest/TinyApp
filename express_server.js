@@ -20,6 +20,13 @@ app.get("/urls", (req, res) => {
     res.render("urls_index", templateVars);
 });
 
+// app.get("/michelle", (req, res) => {
+//     const anObject = { 
+//         ourName : "michelle",
+//         ourPoliticalViews : "trump is the best"
+//     };
+//     res.render("urls_test", anObject);
+});
 app.get("/urls", (req, res) => {
     const templateVars = { shortURL: req.params.id };
     res.render("urls_show", templateVars);
