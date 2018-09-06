@@ -23,17 +23,16 @@ app.get("/urls", (req, res) => {
     const templateVars = { urls: urlDatabase, title: "TinyApp" };
     res.render("urls_index", templateVars);
 });
+// get urls_new
+app.get("/urls/new", (req, res) => {
+    const templateVars = { urlsNew: req.params.id };
+    res.render("urls_new", templateVars);
+});
 // get shortURL
 app.get("/urls/:short", (req, res) => {
     const templateVars = { shortURL: req.params.id };
     res.render("urls_show", templateVars);
 });
-// delete url
-// app.post("/urls/:id/delete", (req,res)=>{
-//     const targetURL = req.params.url;
-//     delete urlDatabase.;
-// });
-
 // POST http://localhost:8080/api/users
 // parameters sent with 
 app.post('/urls/:id/delete', function(req, res) {
