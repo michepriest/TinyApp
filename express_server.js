@@ -11,9 +11,21 @@ const urlDatabase = {
     "9sm5xK": "http://www.google.com"
 };
 // body parser for the POST route for the delete button
-var bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended: true })); 
+// Used Matt's code..
+function generateRandomString(digits) {
+    //Solution from https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+ 
+    for (var i = 0; i < digits; i++){
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+ 
+    return text;
+ }
 
 app.get("/urls.json", (req, res) => {
     res.send(urlDatabase);
@@ -32,6 +44,13 @@ app.get("/urls/new", (req, res) => {
 app.get("/urls/:short", (req, res) => {
     const templateVars = { shortURL: req.params.id };
     res.render("urls_show", templateVars);
+});
+// 
+// 
+app.post('/urls', function(req, res) {
+    var key = generateRandomString(6) 
+    console.log(key);
+    console.log(req.body.longURL);
 });
 // POST http://localhost:8080/api/users
 // parameters sent with 
