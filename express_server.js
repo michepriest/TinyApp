@@ -16,7 +16,7 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-    const templateVars = { urls: urlDatabase };
+    const templateVars = { urls: urlDatabase, title: "TinyApp" };
     res.render("urls_index", templateVars);
 });
 
@@ -27,7 +27,7 @@ app.get("/urls", (req, res) => {
 //     };
 //     res.render("urls_test", anObject);
 // });
-app.get("/urls", (req, res) => {
+app.get("/urls/:short", (req, res) => {
     const templateVars = { shortURL: req.params.id };
     res.render("urls_show", templateVars);
 });
