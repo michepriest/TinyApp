@@ -8,13 +8,14 @@ app.set("view engine", "ejs");
 
 const urlDatabase = {
     "b2xVn2": "http://www.lighthouselabs.ca",
-    "9sm5xK": "http://www.google.com"
+    "9sm5xK": "http://www.google.com",
+    "U7gSzm": "http://www.twitter.com"
 };
 // body parser for the POST route for the delete button
 const bodyParser = require('body-parser');
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended: true })); 
-// Used Matt's code..
+// Used Matt's code...he said he got the base of it from the top response by csharptest https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript 
 function generateRandomString(digits) {
     //Solution from https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
     var text = "";
