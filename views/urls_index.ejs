@@ -10,9 +10,13 @@
   <ul>
     <% for (const shortURL in urls) { %>
       <li>
-       <%= shortURL %> <%= urls[shortURL] %>
+       <%= shortURL %> :: <%= urls[shortURL] %> :: 
+        <form method="POST" action="/urls/<%=shortURL%>/delete">
+          <button type ="submit">Delete</button>
+        </form>
       </li> 
    <% } %>
   </ul>
+  
 </body>
 </html>
