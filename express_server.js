@@ -47,8 +47,8 @@ app.get('/urls/new', (req, res) => {
 });
 
 // get shortURL NEEDS MORE
-app.get('/urls/:short', (req, res) => {
-    const templateVars = { shortURL: req.params.id };
+app.get('/urls/:id', (req, res) => {
+    const templateVars = { shortURL: req.params.id, longURL: urlDatabase[req.params.id] };
     res.render('urls_show', templateVars);
 });
 
@@ -72,6 +72,12 @@ app.post('/urls', (req, res) => {
     // TODO: we're ghosting on the user's browser.  stop ghosting, tell them where to go next.
 });
 
+app.post('/urls/:id', (req, res) => {
+    urlDatabase[req.params.id] = req.body.longURL
+    res.redirect('/urls');
+    // TODO: we're ghosting on the user's browser.  stop ghosting, tell them where to go next.
+});
+
 // parameters sent with 
 app.post('/urls/:id/delete', function(req, res) {
     let urlId = req.params.id;
@@ -80,7 +86,6 @@ app.post('/urls/:id/delete', function(req, res) {
     console.log(urlDatabase);
     res.redirect('/urls');
 });
-
 
 app.listen(PORT, () => {
     console.log(`TinyApp listening on port ${PORT}!`);

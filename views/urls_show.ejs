@@ -1,24 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <title>TinyApp</title>
-</head>
-<header>
-  <% include ./partials/_header%>
-</header>
-<body>
+    <head>
+    <title>TinyApp</title>
+    </head>
+    <header>
+    <% include ./partials/_header%>
+    </header>
+    <body>
+            <%= shortURL %><br>
+            <%= longURL %>
 
-
-
-  <ul>
-    <% for (const shortURL in urls) { %>
-      <li>
-       <%= shortURL %> <%= urls[shortURL] %>
-      </li> 
-   <% } %>
-  </ul>
-
-
-
-</body>
+        <form action="/urls/<%= shortURL %>" method="POST" style="margin:150px;">
+            <label for="longURL">Update Your URL:</label>
+            <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
+            <input type="submit" value="Submit">
+        </form>
+    </body>
 </html>
