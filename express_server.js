@@ -7,7 +7,7 @@ const PORT = 8080;
 app.set('view engine', 'ejs');
 
 const urlDatabase = {
-    'b2xVn2': 'http://www.lighthouselabs.ca',
+    'b2xVn2': 'https://www.lighthouselabs.ca',
     '9sm5xK': 'http://www.google.com',
     'U7gSzm': 'http://www.twitter.com'
 };
@@ -33,50 +33,58 @@ function generateRandomString(digits) {
 app.get('/urls.json', (req, res) => {
     res.send(urlDatabase);
 });
-// creates title
+
+// list all the URLs (shortened, with delete links)
 app.get('/urls', (req, res) => {
     const templateVars = { urls: urlDatabase, title: 'TinyApp' };
     res.render('urls_index', templateVars);
 });
-// get urls_new
+
+// show the user the form to create a new short url
 app.get('/urls/new', (req, res) => {
-    const templateVars = { urlsNew: req.params.id };
+    const templateVars = { };
     res.render('urls_new', templateVars);
 });
-// get shortURL
+
+// get shortURL NEEDS MORE
 app.get('/urls/:short', (req, res) => {
     const templateVars = { shortURL: req.params.id };
     res.render('urls_show', templateVars);
 });
 
+// public-facing link that turns magically into the full longURL
 app.get("/u/:shortURL", (req, res) => {
     let shortURL = req.params.shortURL;
     let longURL = urlDatabase[shortURL];
     res.redirect(longURL);
 })
 
-// generates a random url
-// adds or appends shortURL into the database
-app.post('/urls', function(req, res) {
-    var shortURL = generateRandomString(6) 
+// Actually does the URL-shortening:
+//   * generates a random url
+//   * adds or appends shortURL into the database
+//   * sends them somewhere.  where?  drat!
+app.post('/urls', (req, res) => {
+    let shortURL = generateRandomString(6) 
     console.log(shortURL);
     console.log(req.body.longURL);
     urlDatabase[shortURL] = req.body.longURL
     console.log(urlDatabase);
-
+    // TODO: we're ghosting on the user's browser.  stop ghosting, tell them where to go next.
 });
 
-// POST http://localhost:8080/api/users
 // parameters sent with 
 app.post('/urls/:id/delete', function(req, res) {
-    let urls = req.params.id;
-    console.log(urls);
-    delete urlDatabase[urls];
+    let urlId = req.params.id;
+    console.log(urlId);
+    delete urlDatabase[urlId];
     console.log(urlDatabase);
     res.redirect('/urls');
 });
 
 
 app.listen(PORT, () => {
-    console.log(`Example app listening on port ${PORT}!`);
+    console.log(`TinyApp listening on port ${PORT}!`);
 });
+
+
+console.log("the bottom");
