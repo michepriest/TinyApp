@@ -72,10 +72,10 @@ app.post('/urls', (req, res) => {
     // TODO: we're ghosting on the user's browser.  stop ghosting, tell them where to go next.
 });
 
+// route to /urls after updating short url
 app.post('/urls/:id', (req, res) => {
     urlDatabase[req.params.id] = req.body.longURL
     res.redirect('/urls');
-    // TODO: we're ghosting on the user's browser.  stop ghosting, tell them where to go next.
 });
 
 // parameters sent with 
