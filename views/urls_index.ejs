@@ -7,10 +7,11 @@
   <% include ./partials/_header%>
 </header>
 <body>
+  Click THIS to shorten a new URL
   <ul>
     <% for (const shortURL in urls) { %>
       <li>
-       <%= shortURL %> :: <%= urls[shortURL] %> :: 
+        <%= shortURL %> :: <%= urls[shortURL] %> :: 
         <form method="POST" action="/urls/<%=shortURL%>/delete">
           <button type ="submit">Delete</button>
         </form>
