@@ -34,21 +34,33 @@ app.get('/urls.json', (req, res) => {
     res.send(urlDatabase);
 });
 
+// let templateVars = {
+//     username: req.cookies["username"],
+
+// };
+// res.render("urls_index", templateVars);
+
 // list all the URLs (shortened, with delete links)
 app.get('/urls', (req, res) => {
-    const templateVars = { urls: urlDatabase, title: 'TinyApp' };
+    let username;
+    if (req.cookies) {
+        username = req.cookies.username;
+    }
+    const templateVars = { urls: urlDatabase, title: 'TinyApp', username: 'username' }; // TODO: MAKE DYNAMIC!!!
     res.render('urls_index', templateVars);
 });
 
 // show the user the form to create a new short url
 app.get('/urls/new', (req, res) => {
-    const templateVars = { };
+    const username = req.cookies.username;
+    const templateVars = { username: username };
     res.render('urls_new', templateVars);
 });
 
 // get shortURL NEEDS MORE
 app.get('/urls/:id', (req, res) => {
-    const templateVars = { shortURL: req.params.id, longURL: urlDatabase[req.params.id] };
+    const username = req.cookies.username;
+    const templateVars = { shortURL: req.params.id, longURL: urlDatabase[req.params.id], username: username };
     res.render('urls_show', templateVars);
 });
 
@@ -58,6 +70,14 @@ app.get("/u/:shortURL", (req, res) => {
     let longURL = urlDatabase[shortURL];
     res.redirect(longURL);
 })
+// login
+app.post('/login', (req, res) => {
+
+
+    res.cookie('username', req.body.username);
+
+    res.redirect('/urls');
+});
 
 // Actually does the URL-shortening:
 //   * generates a random url
