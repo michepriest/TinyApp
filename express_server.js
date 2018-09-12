@@ -42,21 +42,11 @@ function generateRandomString(digits) {
   //Solution from https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
   let text = '';
   let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  for (let i = 0; i < digits; i++) {
+  for (let i = 0; i <= digits; i++) {
       text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
   return text;
 };
-// LEFT OFF HERE 000000000000000000000000000000000
-function generateRandomUserId(digits) {
-//Solution from https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
-  let text = '';
-  let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  for (let i = 0; i < digits; i++) {
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
-  return text;
-}; 
 
 app.get('/urls.json', (req, res) => {
   res.send(urlDatabase);
@@ -94,6 +84,14 @@ app.get('/register', (req, res) => {
   res.render('register', templateVars);
 });
 
+// login page
+app.get('/login', (req, res) => {
+  let templateVars = { title: "Login"}
+  let username = req.body.username;
+  let password = req.body.password;
+  res.render('login', templateVars);
+});
+
 // public-facing link that turns magically into the full longURL
 app.get("/u/:shortURL", (req, res) => {
   let shortURL = req.params.shortURL;
@@ -101,14 +99,29 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
-// LEFT OFF HERE 000000000000000000000000000000000
 // registration
 app.post('/register', (req, res) => {
   let username = req.body.email;
   let password = req.body.password;
-  let userId = generateRandomUserId(8);
+  let userId = generateRandomString(6);
   userDb[userId] = {id: userId, username: username, password: password};
   console.log(username, password);
+  // res.cookie(username, req.body.username);
+  res.cookie("username", username);
+  res.cookie("user_id", userId);
+  res.redirect('/urls');
+});
+
+// Login
+app.post('/login', (req, res) => {
+  let username = req.body.email;
+  let password = req.body.password;
+  let userId = generateRandomString(6);
+  userDb[userId] = {id: userId, username: username, password: password};
+  console.log(username, password);
+  // res.cookie(username, req.body.username);
+  res.cookie("username", username);
+  res.cookie("user_id", userId);
   res.redirect('/urls');
 });
 
