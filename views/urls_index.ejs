@@ -3,23 +3,25 @@
 <head>
   <title><%= title %></title>
 </head>
-
 <body>
   <header>
     <%- include("./partials/_header") %>
   </header>
   Click THIS to shorten a new URL
+
   <ul>
     <% for (const shortURL in urls) { %>
       <li>
         <%= shortURL %> :: <%= urls[shortURL] %> :: 
         <form method="POST" action="/urls/<%=shortURL%>/delete">
-          <button type ="submit">Delete</button>
-          <a href="/urls/<%=shortURL%>">Edit</a>
+          <button type="submit">Delete</button>
+        </form>
+        <form method="POST" action="/urls/<%=shortURL%>">
+          <input id="longURL" type="text" name="longURL" placeholder="<%= urls[shortURL] %>" style="width: 300px">
+          <button type="submit" value="Submit">Edit</button>
         </form>
       </li> 
    <% } %>
-  </ul>
-  
+  </ul> 
 </body>
 </html>

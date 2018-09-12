@@ -50,7 +50,7 @@ app.get('/urls', (req, res) => {
     if (req.cookies) {
         username = req.cookies.username;
     }
-    const templateVars = { urls: urlDatabase, title: 'TinyApp', username: 'username' }; // TODO: MAKE DYNAMIC!!!
+    const templateVars = { urls: urlDatabase, title: 'TinyApp', username: username }; // TODO: MAKE DYNAMIC!!!
     res.render('urls_index', templateVars);
 });
 
@@ -68,21 +68,38 @@ app.get('/urls/:id', (req, res) => {
     res.render('urls_show', templateVars);
 });
 
+// Create a registration page
+app.get('/register', (req, res) => {
+    let templateVars = { title: "Register"}
+    let username = req.body.username;
+    let password = req.body.password;
+    res.render('register', templateVars);
+});
+
 // public-facing link that turns magically into the full longURL
 app.get("/u/:shortURL", (req, res) => {
     let shortURL = req.params.shortURL;
     let longURL = urlDatabase[shortURL];
     res.redirect(longURL);
-})
+});
+
+// registration
+app.post('/register', (req, res) => {
+    let username = req.body.username;
+    let password = req.body.password;
+    console.log(username, password);
+    res.redirect('/urls');
+});
+
 // login
 app.post('/login', (req, res) => {
-    let username = req.body.userSignin;
+    let username = req.body.username;
     res.cookie(username, req.body.username);
     res.redirect('/urls');
 });
 
 app.post('/logout', (req, res) => {
-    let username = req.body.userSignin;
+    let username = req.body.username;
     res.clearCookie(username, req.body.username);
     res.redirect('/urls');
 });
@@ -92,26 +109,28 @@ app.post('/logout', (req, res) => {
 //   * adds or appends shortURL into the database
 //   * sends them somewhere.  where?  drat!
 app.post('/urls', (req, res) => {
-    let shortURL = generateRandomString(6) 
-    console.log(shortURL);
+    let shortURL = generateRandomString(6); 
+    // console.log(shortURL);
     console.log(req.body.longURL);
-    urlDatabase[shortURL] = req.body.longURL
-    console.log(urlDatabase);
+    urlDatabase[shortURL] = req.body.longURL;
+    // console.log(urlDatabase);
     // TODO: we're ghosting on the user's browser.  stop ghosting, tell them where to go next.
 });
 
 // route to /urls after updating short url
 app.post('/urls/:id', (req, res) => {
-    urlDatabase[req.params.id] = req.body.longURL
+    console.log(req.body.longURL);
+    urlDatabase[req.params.id] = req.body.longURL;
+    console.log(urlDatabase);
     res.redirect('/urls');
 });
 
 // parameters sent with 
 app.post('/urls/:id/delete', function(req, res) {
     let urlId = req.params.id;
-    console.log(urlId);
+    // console.log(urlId);
     delete urlDatabase[urlId];
-    console.log(urlDatabase);
+    // console.log(urlDatabase);
     res.redirect('/urls');
 });
 
