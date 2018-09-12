@@ -12,7 +12,7 @@ const urlDatabase = {
     'U7gSzm': 'http://www.twitter.com'
 };
 
-const users = {
+const userDb = {
     "userRandomID": {
         id: "userRandomID",
         email: "user@example.com",
@@ -22,6 +22,11 @@ const users = {
         id: "user2RandomID",
         email: "user2@example.com",
         password: "dishwasher-funk"
+    },
+    "user3RandomID": {
+        id: "user3RandomID",
+        email: "user3@example.com",
+        password: "lighthouse"
     };
 };
 
@@ -44,7 +49,19 @@ function generateRandomString(digits) {
     }
  
     return text;
- }
+};
+LEFT OFF HERE 000000000000000000000000000000000
+function generateRandomUserId(digits) {
+//Solution from https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
+    var text = '';
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for (var i = 0; i < digits; i++){
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+
+    return text;
+}; 
 
 app.get('/urls.json', (req, res) => {
     res.send(urlDatabase);
@@ -95,10 +112,12 @@ app.get("/u/:shortURL", (req, res) => {
     res.redirect(longURL);
 });
 
+LEFT OFF HERE 000000000000000000000000000000000
 // registration
 app.post('/register', (req, res) => {
     let username = req.body.username;
     let password = req.body.password;
+    let userDb[userID] = {id: userID, username: username, password: password};
     console.log(username, password);
     res.redirect('/urls');
 });
@@ -109,6 +128,7 @@ app.post('/login', (req, res) => {
     res.cookie(username, req.body.username);
     res.redirect('/urls');
 });
+
 
 app.post('/logout', (req, res) => {
     let username = req.body.username;
