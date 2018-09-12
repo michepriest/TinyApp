@@ -17,6 +17,10 @@ const urlDatabase = {
 const bodyParser = require('body-parser');
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended: true })); 
+
+var cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
 // Used Matt's code...he said he got the base of it from the top response by csharptest https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript 
 function generateRandomString(digits) {
     //Solution from https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
@@ -72,10 +76,14 @@ app.get("/u/:shortURL", (req, res) => {
 })
 // login
 app.post('/login', (req, res) => {
+    let username = req.body.userSignin;
+    res.cookie(username, req.body.username);
+    res.redirect('/urls');
+});
 
-
-    res.cookie('username', req.body.username);
-
+app.post('/logout', (req, res) => {
+    let username = req.body.userSignin;
+    res.clearCookie(username, req.body.username);
     res.redirect('/urls');
 });
 
