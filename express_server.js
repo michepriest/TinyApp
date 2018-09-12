@@ -7,133 +7,123 @@ const PORT = 8080;
 app.set('view engine', 'ejs');
 
 const urlDatabase = {
-    'b2xVn2': 'https://www.lighthouselabs.ca',
-    '9sm5xK': 'http://www.google.com',
-    'U7gSzm': 'http://www.twitter.com'
+  'b2xVn2': 'https://www.lighthouselabs.ca',
+  '9sm5xK': 'http://www.google.com',
+  'U7gSzm': 'http://www.twitter.com'
 };
 
 const userDb = {
-    "userRandomID": {
-        id: "userRandomID",
-        email: "user@example.com",
-        password: "purple-monkey-dinosaur"
-    },
-    "user2RandomID": {
-        id: "user2RandomID",
-        email: "user2@example.com",
-        password: "dishwasher-funk"
-    },
-    "user3RandomID": {
-        id: "user3RandomID",
-        email: "user3@example.com",
-        password: "lighthouse"
-    };
+  "userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
+  },
+  "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk"
+  },
+  "user3RandomID": {
+    id: "user3RandomID",
+    email: "user3@example.com",
+    password: "lighthouse"
+  }
 };
 
 // body parser for the POST route for the delete button
 const bodyParser = require('body-parser');
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended: true })); 
-
-var cookieParser = require('cookie-parser');
+let cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
 // Used Matt's code...he said he got the base of it from the top response by csharptest https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript 
 function generateRandomString(digits) {
-    //Solution from https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
-    var text = '';
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
- 
-    for (var i = 0; i < digits; i++){
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
- 
-    return text;
+  //Solution from https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
+  let text = '';
+  let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for (let i = 0; i < digits; i++) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
 };
-LEFT OFF HERE 000000000000000000000000000000000
+// LEFT OFF HERE 000000000000000000000000000000000
 function generateRandomUserId(digits) {
 //Solution from https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
-    var text = '';
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for (var i = 0; i < digits; i++){
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-
-    return text;
+  let text = '';
+  let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for (let i = 0; i < digits; i++) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
 }; 
 
 app.get('/urls.json', (req, res) => {
-    res.send(urlDatabase);
+  res.send(urlDatabase);
 });
-
-// let templateVars = {
-//     username: req.cookies["username"],
-
-// };
-// res.render("urls_index", templateVars);
 
 // list all the URLs (shortened, with delete links)
 app.get('/urls', (req, res) => {
-    let username;
-    if (req.cookies) {
-        username = req.cookies.username;
-    }
-    const templateVars = { urls: urlDatabase, title: 'TinyApp', username: username }; // TODO: MAKE DYNAMIC!!!
-    res.render('urls_index', templateVars);
+  let username;
+  if (req.cookies) {
+      username = req.cookies.username;
+  }
+  const templateVars = { urls: urlDatabase, title: 'TinyApp', username: username }; // TODO: MAKE DYNAMIC!!!
+  res.render('urls_index', templateVars);
 });
 
 // show the user the form to create a new short url
 app.get('/urls/new', (req, res) => {
-    const username = req.cookies.username;
-    const templateVars = { username: username };
-    res.render('urls_new', templateVars);
+  const username = req.cookies.username;
+  const templateVars = { username: username };
+  res.render('urls_new', templateVars);
 });
 
 // get shortURL NEEDS MORE
 app.get('/urls/:id', (req, res) => {
-    const username = req.cookies.username;
-    const templateVars = { shortURL: req.params.id, longURL: urlDatabase[req.params.id], username: username };
-    res.render('urls_show', templateVars);
+  const username = req.cookies.username;
+  const templateVars = { shortURL: req.params.id, longURL: urlDatabase[req.params.id], username: username };
+  res.render('urls_show', templateVars);
 });
 
 // Create a registration page
 app.get('/register', (req, res) => {
-    let templateVars = { title: "Register"}
-    let username = req.body.username;
-    let password = req.body.password;
-    res.render('register', templateVars);
+  let templateVars = { title: "Register"}
+  let username = req.body.username;
+  let password = req.body.password;
+  res.render('register', templateVars);
 });
 
 // public-facing link that turns magically into the full longURL
 app.get("/u/:shortURL", (req, res) => {
-    let shortURL = req.params.shortURL;
-    let longURL = urlDatabase[shortURL];
-    res.redirect(longURL);
+  let shortURL = req.params.shortURL;
+  let longURL = urlDatabase[shortURL];
+  res.redirect(longURL);
 });
 
-LEFT OFF HERE 000000000000000000000000000000000
+// LEFT OFF HERE 000000000000000000000000000000000
 // registration
 app.post('/register', (req, res) => {
-    let username = req.body.username;
-    let password = req.body.password;
-    let userDb[userID] = {id: userID, username: username, password: password};
-    console.log(username, password);
-    res.redirect('/urls');
+  let username = req.body.email;
+  let password = req.body.password;
+  let userId = generateRandomUserId(8);
+  userDb[userId] = {id: userId, username: username, password: password};
+  console.log(username, password);
+  res.redirect('/urls');
 });
 
-// login
+// the login form is in the _header partial
 app.post('/login', (req, res) => {
-    let username = req.body.username;
-    res.cookie(username, req.body.username);
-    res.redirect('/urls');
+  let username = req.body.username;
+  res.cookie(username, req.body.username);
+  res.redirect('/urls');
 });
 
-
+// the login form is in the _header partial
 app.post('/logout', (req, res) => {
-    let username = req.body.username;
-    res.clearCookie(username, req.body.username);
-    res.redirect('/urls');
+  let username = req.body.username;
+  res.clearCookie(username, req.body.username);
+  res.redirect('/urls');
 });
 
 // Actually does the URL-shortening:
@@ -141,34 +131,33 @@ app.post('/logout', (req, res) => {
 //   * adds or appends shortURL into the database
 //   * sends them somewhere.  where?  drat!
 app.post('/urls', (req, res) => {
-    let shortURL = generateRandomString(6); 
-    // console.log(shortURL);
-    console.log(req.body.longURL);
-    urlDatabase[shortURL] = req.body.longURL;
-    // console.log(urlDatabase);
-    // TODO: we're ghosting on the user's browser.  stop ghosting, tell them where to go next.
+  let shortURL = generateRandomString(6); 
+  // console.log(shortURL);
+  console.log(req.body.longURL);
+  urlDatabase[shortURL] = req.body.longURL;
+  // console.log(urlDatabase);
+  // TODO: we're ghosting on the user's browser.  stop ghosting, tell them where to go next.
 });
 
 // route to /urls after updating short url
 app.post('/urls/:id', (req, res) => {
-    console.log(req.body.longURL);
-    urlDatabase[req.params.id] = req.body.longURL;
-    console.log(urlDatabase);
-    res.redirect('/urls');
+  console.log(req.body.longURL);
+  urlDatabase[req.params.id] = req.body.longURL;
+  console.log(urlDatabase);
+  res.redirect('/urls');
 });
 
 // parameters sent with 
 app.post('/urls/:id/delete', function(req, res) {
-    let urlId = req.params.id;
-    // console.log(urlId);
-    delete urlDatabase[urlId];
-    // console.log(urlDatabase);
-    res.redirect('/urls');
+  let urlId = req.params.id;
+  // console.log(urlId);
+  delete urlDatabase[urlId];
+  // console.log(urlDatabase);
+  res.redirect('/urls');
 });
 
 app.listen(PORT, () => {
-    console.log(`TinyApp listening on port ${PORT}!`);
+  console.log(`TinyApp listening on port ${PORT}!`);
 });
 
-
-console.log("the bottom");
+// console.log("the bottom");
