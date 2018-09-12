@@ -3,10 +3,11 @@
 <head>
   <title><%= title %></title>
 </head>
-<header>
-  <% include ./partials/_header%>
-</header>
+
 <body>
+  <header>
+    <%- include("./partials/_header") %>
+  </header>
   Click THIS to shorten a new URL
   <ul>
     <% for (const shortURL in urls) { %>
