@@ -10,7 +10,7 @@
   Click THIS to shorten a new URL
 
   <ul>
-    <% for (const shortURL in urls) { %>
+    <% for (let shortURL in urls) { %>
       <li>
         <%= shortURL %> :: <%= urls[shortURL] %> :: 
         <form method='POST' action='/urls/<%=shortURL%>/delete'>
