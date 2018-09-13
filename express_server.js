@@ -130,33 +130,19 @@ app.post('/register', (request, response) => {
 
 // Login
 app.post('/login', (request, response) => {
-  console.log(request)
-  console.log('-----------------------------------------------------')
-  console.log('-----------------------------------------------------')
-  console.log('-----------------------------------------------------')
-  console.log(request.body)
-
   // verify user_id === userDb, if true, next step | if false, send error
   let user_id = request.body.email;
   for (let key in userDb) {
-    userDb[key].email
-    console.log(key)
-  }
-  
-  user_id === userDb;
-
-  // verify correct password, if true, next step | if false, send error
-  // set user_id cookie on successfull login
-  
-  // let user_id = request.body.email;
-  // let password = request.body.password;
-  // let userId = generateRandomString(6);
-  // userDb[userId] = {id: userId, user: user_id, password: password};
-  // console.log(user_id, password);
-  // // response.cookie(username, request.body.username);
-  // request.session('user_id', user_id);
-  // request.session('user_id', userId);
-  // response.redirect('/urls');
+    if (userDb[key].email === user_id) {
+      // verify correct password, if true, next step | if false, send error
+      if (userDb[key].password === request.body.password) {
+        // set user_id cookie on successfull login
+        request.session.user_id = user_id
+        response.redirect('/urls');
+      }
+    } 
+  }  
+  response.redirect(400, '/login');
 });
 
 //  app.post('/login', (request, response) => {
