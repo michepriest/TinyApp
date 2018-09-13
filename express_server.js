@@ -22,7 +22,6 @@ const urlDatabase = {
   '9sm5xK': 'http://www.google.com',
   'U7gSzm': 'http://www.twitter.com'
 };
-// TROUBLESHOOTING ABOVE IS OKAY
 
 const userDb = {
   'userRandomID': {
@@ -62,6 +61,8 @@ app.get('/urls', (request, response) => {
   console.log(request.session.user_id);
   let email = request.session.user_id;
   let templateVars = { urls: urlDatabase, title: 'TinyApp', email: email};
+  let userList = {email: {'shortURL' : 'longURL'}};
+  userList(userDB);
   response.render('urls_index', templateVars);
 });
 
@@ -80,7 +81,7 @@ app.get('/urls/:id', (request, response) => {
   response.render('urls_show', templateVars);
 });
 
-// Creates a registration page
+// creates a registration page
 app.get('/register', (request, response) => {
   let templateVars = { title: "Register"}
   response.render('register', templateVars);
@@ -92,14 +93,13 @@ app.get('/login', (request, response) => {
   response.render('login', templateVars);
 });
 
-// public-facing link that turns magically into the full longURL
+// when click on shortURL will be sent to destination of long URL
 app.get('/u/:shortURL', (request, response) => {
   let shortURL = request.params.shortURL;
   let longURL = urlDatabase[shortURL];
   response.redirect(longURL);
 });
 
-// 
 app.get('/logout', (request, response) => {
   response.clearCookie('session');
   response.redirect('/urls');
@@ -134,8 +134,8 @@ app.post('/login', (request, response) => {
   response.redirect(400, '/login');
 });
 
-// Actually does the URL-shortening:
-//   * generates a random url
+
+//   * generates a short, random url
 //   * adds or appends shortURL into the database
 app.post('/urls', (request, response) => {
   let shortURL = generateRandomString(6); 
