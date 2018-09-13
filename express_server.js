@@ -59,6 +59,7 @@ app.get('/urls.json', (request, response) => {
 
 // list all the URLs (shortened, with delete links)
 app.get('/urls', (request, response) => {
+  console.log(request.session.user_id);
   let email = request.session.user_id;
   let templateVars = { urls: urlDatabase, title: 'TinyApp', email: email};
   response.render('urls_index', templateVars);
@@ -111,7 +112,7 @@ app.post('/register', (request, response) => {
   let password = request.body.password;
   let userId = generateRandomString(6);
   userDb[userId] = {id: userId, email: email, password: password};
-  request.session.user_id = userId;
+  request.session.user_id = email;
   response.redirect('/urls');
 });
 
@@ -136,31 +137,21 @@ app.post('/login', (request, response) => {
 // Actually does the URL-shortening:
 //   * generates a random url
 //   * adds or appends shortURL into the database
-//   * sends them somewhere.  where?  drat!
 app.post('/urls', (request, response) => {
   let shortURL = generateRandomString(6); 
-  // console.log(shortURL);
-  console.log(request.body.longURL);
   urlDatabase[shortURL] = request.body.longURL;
-  // console.log(urlDatabase);
-  // TODO: we're ghosting on the user's browser.  stop ghosting, tell them where to go next.
   response.redirect('/urls');
 });
 
 // route to /urls after updating short url
 app.post('/urls/:id', (request, response) => {
-  console.log(request.body.longURL);
   urlDatabase[request.params.id] = request.body.longURL;
-  console.log(urlDatabase);
   response.redirect('/urls');
 });
 
-// parameters sent with 
-app.post('/urls/:id/delete', function(request, response) {
+app.post('/urls/:id/delete', (request, response) => {
   let urlId = request.params.id;
-  // console.log(urlId);
   delete urlDatabase[urlId];
-  // console.log(urlDatabase);
   response.redirect('/urls');
 });
 
