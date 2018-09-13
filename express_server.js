@@ -61,7 +61,7 @@ app.get('/urls', (request, response) => {
   console.log(request.session.user_id);
   let email = request.session.user_id;
   let templateVars = { urls: urlDatabase, title: 'TinyApp', email: email};
-  let userList = {email: {'shortURL' : 'longURL'}};
+  let userList = {email: {'shortURL' : 'longURL'}}; // attempt to create a way for URLs to belong to users
   userList(userDB);
   response.render('urls_index', templateVars);
 });
