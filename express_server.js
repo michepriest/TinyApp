@@ -5,6 +5,9 @@ const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
 const app = express();
 
+const bcrypt = require('bcrypt');
+
+
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.json()); 
