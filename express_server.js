@@ -15,7 +15,6 @@ app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000 // === 24 hours in milliseconds
 }));
 
-// URL and userDb
 const PORT = 8080;
 const urlDatabase = {
   'b2xVn2': 'https://www.lighthouselabs.ca',
@@ -58,7 +57,6 @@ app.get('/urls.json', (request, response) => {
 
 // list all the URLs (shortened, with delete links)
 app.get('/urls', (request, response) => {
-  console.log(request.session.user_id);
   let email = request.session.user_id;
   let templateVars = { urls: urlDatabase, title: 'TinyApp', email: email};
   let userList = {email: {'shortURL' : 'longURL'}}; // attempt to create a way for URLs to belong to users
@@ -75,7 +73,6 @@ app.get('/urls/new', (request, response) => {
 
 // display shortURL and longURL
 app.get('/urls/:id', (request, response) => {  
-  console.log(request.params)
   let email = request.session.user_id;
   let templateVars = { shortURL: request.params.id, longURL: urlDatabase[request.params.id], email: email };
   response.render('urls_show', templateVars);
