@@ -4,10 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
 const app = express();
-
 const bcrypt = require('bcrypt');
-
-
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.json()); 
@@ -29,17 +26,17 @@ const userDb = {
   'userRandomID': {
     id: 'userRandomID',
     email: 'user@example.com',
-    password: 'purple-monkey-dinosaur'
+    password: bcrypt.hashSync('purple-monkey-dinosaur', 10)
   },
   'user2RandomID': {
     id: 'user2RandomID',
     email: 'user2@example.com',
-    password: 'dishwasher-funk'
+    password: bcrypt.hashSync('dishwasher-funk', 10)
   },
   'user3RandomID': {
     id: 'user3RandomID',
     email: 'user3@example.com',
-    password: 'lighthouse'
+    password: bcrypt.hashSync('lighthouse', 10)
   }
 };
 
@@ -62,8 +59,8 @@ app.get('/urls.json', (request, response) => {
 app.get('/urls', (request, response) => {
   let email = request.session.user_id;
   let templateVars = { urls: urlDatabase, title: 'TinyApp', email: email};
-  let userList = {email: {'shortURL' : 'longURL'}}; // attempt to create a way for URLs to belong to users
-  userList(userDB);
+  //let userList = {email: {'shortURL' : 'longURL'}}; // attempt to create a way for URLs to belong to users
+  //userList(userDB);
   response.render('urls_index', templateVars);
 });
 
@@ -109,10 +106,13 @@ app.get('/logout', (request, response) => {
 app.post('/register', (request, response) => {
 
   let email = request.body.email;
-  let password = request.body.password;
   let userId = generateRandomString(6);
-  userDb[userId] = {id: userId, email: email, password: password};
+  let password = request.body.password;
+  let hashedPassword = bcrypt.hashSync(password, 10);
+  userDb[userId] = {id: userId, email: email, password: hashedPassword};
   request.session.user_id = email;
+  request.session.password = hashedPassword;
+  console.log(userDb);
   response.redirect('/urls');
 });
 
@@ -125,6 +125,7 @@ app.post('/login', (request, response) => {
       // verify correct password, if true, next step | if false, send error
       if (userDb[key].password === request.body.password) {
         // set user_id cookie on successfull login
+        bcrypt.compareSync(password, hashedPassword);
         request.session.user_id = email
         response.redirect('/urls');
         return;
