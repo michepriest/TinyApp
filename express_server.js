@@ -111,7 +111,6 @@ app.post('/register', (request, response) => {
   let hashedPassword = bcrypt.hashSync(password, 10);
   userDb[userId] = {id: userId, email: email, password: hashedPassword};
   request.session.user_id = email;
-  request.session.password = hashedPassword;
   console.log(userDb);
   response.redirect('/urls');
 });
@@ -120,19 +119,20 @@ app.post('/register', (request, response) => {
 app.post('/login', (request, response) => {
   // verify user_id === userDb, if true, next step | if false, send error
   let email = request.body.email;
+  let password = request.body.password;
   for (let key in userDb) {
     if (userDb[key].email === email) {
       // verify correct password, if true, next step | if false, send error
-      if (userDb[key].password === request.body.password) {
+      let hashedPassword = userDb[key].password;
+      if (bcrypt.compareSync(password, hashedPassword)) {
         // set user_id cookie on successfull login
-        bcrypt.compareSync(password, hashedPassword);
         request.session.user_id = email
         response.redirect('/urls');
         return;
       }
     }
   }
-  response.redirect(400, '/login');
+  response.status(400).send("error logging in");
 });
 
 
