@@ -1,13 +1,13 @@
 <nav class='navbar navbar-default' role='navigation'>
   <div class='container-fluid'>
     <!-- login procedure -->
-    <% if (email === undefined) { %>
+    <% if (user === undefined) { %>
       <a href='/register'>Register<br /></a>
       <a href='/login'>Login<br /><br /></a>
         <% } else { %>
           <a href='/logout'>Logout</a>
           <h1>
-            <%= email %>
+            <%= user.email %>
           </h1>
           <% } %>
   </div>

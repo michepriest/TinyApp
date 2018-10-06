@@ -3,7 +3,7 @@
   <head></head>
   <body style='font-size:20px; padding:50px;'>
     <% include partials/_header %>
-    <% if (email === undefined) { %>
+    <% if (user === undefined) { %>
     <a href='/login'>Please login or register to create a short URL</a>
     <% } else { %>
     <form action='/urls' method='POST' style='margin:150px;'>

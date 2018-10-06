@@ -52,10 +52,6 @@ const userDb = {
   }
 };
 
-// specific user's URLs list, inspired by top anser on https://stackoverflow.com/questions/38750705/filter-object-properties-by-key-in-es6
-// let usersURLs = ['urlDatabase.id'];
-
-
 function getUrlsForUser(userID){
   var result = [];
   for(var key in urlDatabase){
@@ -92,28 +88,32 @@ app.get('/urls.json', (request, response) => {
 });
 
 // list all the URLs (shortened, with delete links)
-function getUrlsForUser(userID){
-// NOTE: TODO use getUrlsForUser function
 app.get('/urls', (request, response) => {
   let userID = request.session.user_id; // "abcdef"
   let user = userDb[userID]             // { id: "abcdef", email: "asd@asd", password: "ghjghgj" }
-  let templateVars = { urls: urlDatabase, title: 'TinyApp', user: user };
-  //let userList = {email: {'shortURL' : 'longURL'}}; // attempt to create a way for URLs to belong to users
-  //userList(userDB);
+  let templateVars = { urls: getUrlsForUser(userID), title: 'TinyApp', user: user };
+  let usersURLs = getUrlsForUser(userID);
+  if (userID) {
+    templateVars = {usersURLs: usersURLs, title: 'TinyApp', user: user}
+  } else {
+    reponse.send('No access')
+  }
   response.render('urls_index', templateVars);
 });
 
 // show the user the form to create a new short url
-// NOTE TODO: Are you logged in?
 app.get('/urls/new', (request, response) => {
   let userID = request.session.user_id;
   let user = userDb[userID];
   let templateVars = { user: user };
-  response.render('urls_new', templateVars);
+  if (!userID) {
+    response.send("Request denied. Please ensure you are logged in.")
+  } else {
+    response.render('urls_new', templateVars);
+  }
 });
 
 // display shortURL and longURL
-// NOTE: TODO if not logged in respond with error else do the thing we want to do, are you owner? if userID attached to url matched to userID in session
 app.get('/urls/:id', (request, response) => {  
   let userID = request.session.user_id;
   let user = userDb[userID];
@@ -122,7 +122,11 @@ app.get('/urls/:id', (request, response) => {
     longURL: urlDatabase[request.params.id], 
     user: user,
   };
-  response.render('urls_show', templateVars);
+  if (!userID) {
+    response.send("Request denied. Please ensure you are logged in.")
+  } else {
+    response.render('urls_show', templateVars);
+  }
 });
 
 // creates a registration page
@@ -160,7 +164,6 @@ app.post('/register', (request, response) => {
   let hashedPassword = bcrypt.hashSync(password, 10);
   userDb[userId] = {id: userId, email: email, password: hashedPassword};
   request.session.user_id = userId;
-  console.log(userDb);
   response.redirect('/urls');
 });
 
@@ -173,49 +176,59 @@ app.post('/login', (request, response) => {
   
   if (user) {
     // verify correct password, if true, next step | if false, send error
+    console.log("User verified")
+    
     let hashedPassword = user.password;
     if (bcrypt.compareSync(password, hashedPassword)) {
+      console.log("Password verified");
       // set user_id cookie on successfull login
       request.session.user_id = user.id;
       response.redirect('/urls');
-      return;
+      //return;
     }
-  } 
-  response.status(400).send("error logging in");
-});
-
-// app.post('/urls/:id', (request, response) => {
+  } else {
+    response.status(400).send("Please check for your username / password");
+  }
   
-  //if (// user !== logged in) {
-    // redirect to /login 
-  // }
-    //if (// user logged in
-    // && creates shortURL) {
-    // send user's own shortURLs to their URLs page
-    // }
-
-// })
+});
 
 //   * generates a short, random url
 //   * adds or appends shortURL into the database
-// NOTE: TODO if not logged in respond with error 
 app.post('/urls', (request, response) => {
   let shortURL = generateRandomString(6); 
-  urlDatabase[shortURL] = request.body.longURL;
-  response.redirect('/urls');
+  let urlId = request.params.id;
+  if (!request.session.user_id) {
+    response.send("Request denied. Please ensure you are logged in.")
+  } else {
+    urlDatabase[shortURL] = {
+      shortURL: shortURL,
+      longURL: request.body.longURL,
+      userID: request.session.user_id
+    }
+    response.redirect('/urls');
+  }
 });
 
 // route to /urls after updating short url
-// NOTE: TODO if not logged in respond with error else do the thing we want to do, are you owner? if userID attached to url matched to userID in session
 app.post('/urls/:id', (request, response) => {
-  urlDatabase[request.params.id] = request.body.longURL;
-  response.redirect('/urls');
-});
-// NOTE: TODO if not logged in respond with error else do the thing we want to do, are you owner? if userID attached to url matched to userID in session
-app.post('/urls/:id/delete', (request, response) => {
   let urlId = request.params.id;
-  delete urlDatabase[urlId];
-  response.redirect('/urls');
+  if (!request.session.user_id) {
+    response.send("Request denied. Please ensure you are logged in.")
+  } else {
+    console.log("HHHEEEEYYYY!!!!!")
+    urlDatabase[request.params.id].longURL = request.body.longURL;
+    response.redirect('/urls');
+  }
+});
+
+// delete only available if logged in
+app.post('/urls/:id/delete', (request, response) => {
+  if (!request.session.user_id){
+    response.send("Request denied. Please ensure you are logged in.")
+  } else {
+    delete urlDatabase[request.params.id];
+    response.redirect('/urls');
+  }
 });
 
 app.listen(PORT, () => {

@@ -9,18 +9,18 @@
   </header>
     <div>Click <a href='/urls/new'>THIS</a> to shorten a URL<br /></div>
   <ul>
-    <% for (let shortURL in urls) { %>
+    <% usersURLs.forEach(function(url) { %>
       <li>
-        <%= shortURL %> :: <%= urls[shortURL] %> :: 
-        <form method='POST' action='/urls/<%=shortURL%>/delete'>
+        <%= url.shortURL %> :: <%= url.longURL %> :: 
+        <form method='POST' action='/urls/<%=url.shortURL%>/delete'>
           <button type='submit'>Delete</button>
         </form>
-        <form method='POST' action='/urls/<%=shortURL%>'>
-          <input id='longURL' type='text' name='longURL' placeholder='<%= urls[shortURL] %>' style='width: 300px'>
+        <form method='POST' action='/urls/<%=url.shortURL%>'>
+          <input id='longURL' type='text' name='longURL' placeholder='<%= url.shortURL %>' style='width: 300px'>
           <button type='submit' value='Submit'>Edit</button>
         </form>
       </li> 
-   <% } %>
+   <% }) %>
   </ul> 
 </body>
 </html>
