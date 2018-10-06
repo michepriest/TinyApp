@@ -91,12 +91,12 @@ app.get('/urls.json', (request, response) => {
 app.get('/urls', (request, response) => {
   let userID = request.session.user_id; // "abcdef"
   let user = userDb[userID]             // { id: "abcdef", email: "asd@asd", password: "ghjghgj" }
-  let templateVars = { urls: getUrlsForUser(userID), title: 'TinyApp', user: user };
   let usersURLs = getUrlsForUser(userID);
+  let templateVars = { usersURLs: usersURLs, title: 'TinyApp', user: user };
   if (userID) {
     templateVars = {usersURLs: usersURLs, title: 'TinyApp', user: user}
-  } else {
-    reponse.send('No access')
+  //} else {
+    //response.redirect('/urls')
   }
   response.render('urls_index', templateVars);
 });
@@ -151,7 +151,7 @@ app.get('/u/:shortURL', (request, response) => {
 });
 
 app.get('/logout', (request, response) => {
-  response.clearCookie('session');
+  request.session = null;
   response.redirect('/urls');
 });
 
@@ -207,8 +207,6 @@ app.post('/urls', (request, response) => {
       longURL: request.body.longURL,
       userID: request.session.user_id
     }
-    console.log("added a new shorturl to the database, new state is")
-    console.log(urlDatabase)
     response.redirect('/urls');
   }
 });
@@ -219,7 +217,6 @@ app.post('/urls/:id', (request, response) => {
   if (!request.session.user_id) {
     response.send("Request denied. Please ensure you are logged in.")
   } else {
-    console.log("HHHEEEEYYYY!!!!!")
     urlDatabase[request.params.id].longURL = request.body.longURL;
     response.redirect('/urls');
   }
