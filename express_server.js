@@ -119,7 +119,7 @@ app.get('/urls/:id', (request, response) => {
   let user = userDb[userID];
   let templateVars = { 
     shortURL: request.params.id, 
-    longURL: urlDatabase[request.params.id], 
+    longURL: urlDatabase[request.params.id].longURL, 
     user: user,
   };
   if (!userID) {
@@ -144,7 +144,9 @@ app.get('/login', (request, response) => {
 // when click on shortURL will be sent to destination of long URL
 app.get('/u/:shortURL', (request, response) => {
   let shortURL = request.params.shortURL;
-  let longURL = urlDatabase[shortURL];
+  console.log(urlDatabase)
+  console.log(shortURL)
+  let longURL = urlDatabase[shortURL].longURL;
   response.redirect(longURL);
 });
 
@@ -205,6 +207,8 @@ app.post('/urls', (request, response) => {
       longURL: request.body.longURL,
       userID: request.session.user_id
     }
+    console.log("added a new shorturl to the database, new state is")
+    console.log(urlDatabase)
     response.redirect('/urls');
   }
 });
