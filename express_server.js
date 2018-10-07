@@ -104,7 +104,6 @@ app.post('/register', (request, response) => {
   let email = request.body.email;
     let userId = generateRandomString(6);
     let password = request.body.password;
-    let user = findUserByEmail(email);
     let hashedPassword = bcrypt.hashSync(password, 10);
     if (email === "" || password === "") {
       response.status(400).send("Please enter valid email");
